@@ -2,6 +2,8 @@ package com.example.sankkri.addcontacts;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,12 +13,17 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.firebase.client.Firebase;
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,6 +43,7 @@ public class srchActivity extends FragmentActivity implements ActionBar.TabListe
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
 
         setContentView(R.layout.activity_srch);
@@ -133,12 +141,19 @@ public class srchActivity extends FragmentActivity implements ActionBar.TabListe
             switch (i) {
                 case 0:
                     return new LaunchpadSectionFragment();
-                default:
+                //Added by Krishnath Sankaran
+                case 1:
                     Fragment fragment = new DummySectionFragment();
                     Bundle args = new Bundle();
                     args.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
                     fragment.setArguments(args);
                     return fragment;
+                default:
+                    Fragment fragment2 = new DummySectionFragment();
+                    Bundle args2 = new Bundle();
+                    args2.putInt(DummySectionFragment.ARG_SECTION_NUMBER, i + 1);
+                    fragment2.setArguments(args2);
+                    return fragment2;
             }
         }
 
@@ -179,17 +194,35 @@ public class srchActivity extends FragmentActivity implements ActionBar.TabListe
 
             return rootView;
         }
+
+
     }
 
 
+    /**
+     * This section fills the second and third section
+     * If it is the second screen then search by Name
+     * If it is the third screen then search by Email
+     */
     public static class DummySectionFragment extends Fragment {
         public static final String ARG_SECTION_NUMBER = "section_number";
 
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false);
+            setHasOptionsMenu(true);
+            View rootView;
             Bundle args = getArguments();
-            ((TextView) rootView.findViewById(android.R.id.text1)).setText(getString(R.string.dummy_section_text, args.getInt(ARG_SECTION_NUMBER)));
+            if (args.getInt(ARG_SECTION_NUMBER) == 2) {
+                Log.d("this is message", String.valueOf(args.getInt(ARG_SECTION_NUMBER)));
+                rootView = inflater.inflate(R.layout.fragment_section_second, container, false);
+            } else {
+                Log.d("this is message2", String.valueOf(args.getInt(ARG_SECTION_NUMBER)));
+
+                rootView = inflater.inflate(R.layout.fragment_section_dummy, container, false);
+                ((TextView) rootView.findViewById(android.R.id.text1)).setText(getString(R.string.dummy_section_text, args.getInt(ARG_SECTION_NUMBER)));
+            }
+
             return rootView;
         }
 

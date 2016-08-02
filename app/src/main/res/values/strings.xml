@@ -4,4 +4,8 @@
 
     <string name="demo_external_activity">Demo External Activity</string>
     <string name="demo_collection">Demo Collection</string>
+    <string name="namehint">enter name to query</string>
+    <string name="search_title">SEARCH HERE</string>
+    <string name="search_hint">Search name</string>
+    <string name="menu_search">search name</string>
 </resources>
